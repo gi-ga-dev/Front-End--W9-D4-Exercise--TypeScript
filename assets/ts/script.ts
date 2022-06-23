@@ -12,11 +12,10 @@ class Clothes {
     private _prezzoivainclusa: number;
     private _disponibile: string;
     private _saldo: number;
-    /* private _prezzoFinale: number; */
 
     constructor(id: number, codprod: number, collezione: string, capo: string, 
                 modello: number, quantita: number, colore: string, prezzoivaesclusa: number, 
-                prezzoivainclusa: number, disponibile: string, saldo: number/* , prezzoFinale: number */) {
+                prezzoivainclusa: number, disponibile: string, saldo: number) {
                     this._id = id;
                     this._codprod = codprod;
                     this._collezione = collezione;
@@ -28,7 +27,6 @@ class Clothes {
                     this._prezzoivainclusa = prezzoivainclusa;
                     this._disponibile = disponibile;
                     this._saldo = saldo;
-                    /* this._prezzoFinale = prezzoFinale; */
                 }
 
 
@@ -44,73 +42,75 @@ class Clothes {
     public get disponibile(): string { return this._disponibile; }
     public get saldo(): number { return this._saldo; }
 
-/*     getAcquistoCapo() {
-        this.prezzoFinale = this.prezzoivainclusa - this.saldo;
-    } */
-
+    discPercentage(): number {
+        return (this.prezzoivainclusa * this.saldo) / 100;
+    }
 }
 
-fetch('Abbigliamento.json')  // fetch dell'url
-.then(res => res.json())    // json parse
-.then(function(data) {      // data contiene i dati fetchati dal json
-    data.forEach((ele: any) => { // ele riporta tutti gli array presenti nel json. Per ogni array presente, crea div e lo popola con i dettagli (primo array, poi secondo)
-
-        /* --------- Contenitore Img/Info ---------- */
+fetch('Abbigliamento.json')
+.then(res => res.json())   
+.then(function(data) {     
+    data.forEach((ele: any) => {
 
         let cardCont = document.createElement('div');
         cardCont.className = 'cardCont';
         CONT?.append(cardCont);
         
-        /* ------------------------------------ */
-
         let pId = document.createElement('p');
         pId.className = 'pId';
-        pId.innerHTML = `${'<b>Id:</b>'} ${ele.id}`;
+        pId.innerHTML = `Id: ${ele.id}`;
 
         let pCodProd = document.createElement('p');
         pCodProd.className = 'pCodProd';
-        pCodProd.innerHTML = `${'<b>Codice Prodotto:</b>'} ${ele.codprod}`;
+        pCodProd.innerHTML = `Codice Prodotto: ${ele.codprod}`;
 
         let pCollezione = document.createElement('p');
         pCollezione.className = 'pCollezione';
-        pCollezione.innerHTML = `${'<b>Collezione:</b>'} ${ele.collezione}`;
+        pCollezione.innerHTML = `Collezione: ${ele.collezione}`;
 
         let pCapo = document.createElement('p');
         pCapo.className = 'pCapo';
-        pCapo.innerHTML = `${'<b>Capo:</b>'} ${ele.capo}`;
+        pCapo.innerHTML = `Capo: ${ele.capo}`;
 
         let pModello = document.createElement('p');
         pModello.className = 'pModello';
-        pModello.innerHTML = `${'<b>Modello:</b>'} ${ele.modello}`;
+        pModello.innerHTML = `Modello: ${ele.modello}`;
         
         let pQuantita = document.createElement('p');
         pQuantita.className = 'pQuantita';
-        pQuantita.innerHTML = `${'<b>Quantita:</b>'} ${ele.quantita}`;
+        pQuantita.innerHTML = `Quantita: ${ele.quantita}`;
 
         let pColore = document.createElement('p');
         pColore.className = 'pColore';
-        pColore.innerHTML = `${'<b>Colore:</b>'} ${ele.colore}`;
+        pColore.innerHTML = `Colore: ${ele.colore}`;
 
         let pPrezzoIvaEsclusa = document.createElement('p');
         pPrezzoIvaEsclusa.className = 'pPrezzoIvaEsclusa';
-        pPrezzoIvaEsclusa.innerHTML = `${'<b>Prezzo Iva Esclusa:</b>'} ${ele.prezzoivaesclusa}`;
+        pPrezzoIvaEsclusa.innerHTML = `Prezzo Iva Esclusa: ${ele.prezzoivaesclusa}`;
 
         let pPrezzoIvaInclusa = document.createElement('p');
         pPrezzoIvaInclusa.className = 'pPrezzoIvaInclusa';
-        pPrezzoIvaInclusa.innerHTML = `${'<b>Prezzo Iva Inclusa:</b>'} ${ele.prezzoivainclusa}`;
+        pPrezzoIvaInclusa.innerHTML = `Prezzo Iva Inclusa: ${ele.prezzoivainclusa}`;
 
         let pDisponibile = document.createElement('p');
         pDisponibile.className = 'pDisponibile';
-        pDisponibile.innerHTML = `${'<b>Disponibile in:</b>'} ${ele.disponibile}`;
+        pDisponibile.innerHTML = `Disponibile in: ${ele.disponibile}`;
 
         let pSaldo = document.createElement('p');
         pSaldo.className = 'pSaldo';
-        pSaldo.innerHTML = `${'<b>Saldo:</b>'} ${ele.saldo}`;
+        pSaldo.innerHTML = `Saldo: ${ele.saldo}%`;
 
-        cardCont.append(pId, pCodProd, pCollezione, pCapo, pModello, pQuantita, pColore, 
-                        pPrezzoIvaEsclusa, pPrezzoIvaInclusa, pDisponibile, pSaldo);
-    
+        // inizializzo un oggetto e dentro gli passo i parametri fetchati dal json
         let clothes = new Clothes (ele, ele, ele, ele, ele, ele, ele, ele, ele, ele, ele);
         console.log(clothes);
+
+        // Accedo al metodo della classe
+        let pPrezzoFinale = document.createElement('p');
+        pPrezzoFinale.className = 'pPrezzoFinale';
+        // per ogni elemento prendi prezzo e saldo, e sottraili
+        pPrezzoFinale.innerHTML = `Prezzo finale: ${ele.prezzoivainclusa-ele.discPercentage()}`; // classe.metodo(prezzo-saldo)
+
+        cardCont.append(pId, pCodProd, pCollezione, pCapo, pModello, pQuantita, pColore, 
+                        pPrezzoIvaEsclusa, pPrezzoIvaInclusa, pDisponibile, pSaldo, pPrezzoFinale);
     });
 })
